@@ -1,0 +1,94 @@
+services:
+  db:
+    restart: always
+    image: postgres:17
+    container_name: shoonya-backend-db
+    ports:
+      - "5432:5432"
+    environment:
+      - "POSTGRES_USER=admin"
+      - "POSTGRES_PASSWORD=root"
+      - "POSTGRES_DB=main"
+    volumes:
+      - .data/postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d main"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    container_name: redis
+    image: redis:7.2.4
+    command: redis-server --appendonly yes
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - .data/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: ./backend
+    container_name: shoonya-backend-backend
+    restart: always
+    tty: true
+    volumes:
+      - ./backend/:/usr/src/backend/
+    command: tail -f /dev/null
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery:
+    container_name: celery-default
+    restart: always
+    build: ./backend
+    command: celery -A shoonya_backend.celery worker -Q default --concurrency=2 --loglevel=info
+    volumes:
+      - ./backend/:/usr/src/backend/
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      web:
+        condition: service_started
+
+  # This is the additional queue which contains the low-priority celery tasks. We can adjust the concurrency and workers alloted to this container.
+  celery2:
+    container_name: celery-low-priority
+    restart: always
+    build: ./backend
+    command: celery -A shoonya_backend.celery worker -Q functions --concurrency=2 --loglevel=info
+    volumes:
+      - ./backend/:/usr/src/backend/
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      web:
+        condition: service_started
+
+  # Celery beats - for scheduling daily e-mails
+  celery-beat:
+    build: ./backend
+    command: celery -A shoonya_backend.celery beat --loglevel=info
+    volumes:
+      - ./backend/:/usr/src/backend
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      web:
+        condition: service_started
