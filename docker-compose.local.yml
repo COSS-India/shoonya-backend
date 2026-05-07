@@ -36,6 +36,8 @@ services:
     build: ./backend
     container_name: shoonya-backend-backend
     restart: always
+    env_file:
+      - backend/.env
     tty: true
     volumes:
       - ./backend/:/usr/src/backend/
@@ -53,6 +55,8 @@ services:
     restart: always
     build: ./backend
     command: celery -A shoonya_backend.celery worker -Q default --concurrency=2 --loglevel=info
+    env_file:
+      - backend/.env
     volumes:
       - ./backend/:/usr/src/backend/
     depends_on:
@@ -69,6 +73,8 @@ services:
     restart: always
     build: ./backend
     command: celery -A shoonya_backend.celery worker -Q functions --concurrency=2 --loglevel=info
+    env_file:
+      - backend/.env
     volumes:
       - ./backend/:/usr/src/backend/
     depends_on:

@@ -13,6 +13,7 @@ certbot/certbot.sh
 *~
 __pycache__
 media/
+*/media/
 static/
 frontend/
 
