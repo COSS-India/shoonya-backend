@@ -18,7 +18,7 @@ services:
       retries: 5
 
   redis:
-    container_name: redis
+    container_name: shoonya-redis
     image: redis:7.2.4
     command: redis-server --appendonly yes
     restart: always
@@ -34,10 +34,11 @@ services:
 
   web:
     build: ./backend
+    image: shoonya-backend:local
     container_name: shoonya-backend-backend
     restart: always
     env_file:
-      - backend/.env
+      - config/local/backend.env
     tty: true
     volumes:
       - ./backend/:/usr/src/backend/
@@ -51,12 +52,12 @@ services:
         condition: service_healthy
 
   celery:
-    container_name: celery-default
+    container_name: shoonya-celery-default
     restart: always
-    build: ./backend
+    image: shoonya-backend:local
     command: celery -A shoonya_backend.celery worker -Q default --concurrency=2 --loglevel=info
     env_file:
-      - backend/.env
+      - config/local/celery.env
     volumes:
       - ./backend/:/usr/src/backend/
     depends_on:
@@ -69,12 +70,12 @@ services:
 
   # This is the additional queue which contains the low-priority celery tasks. We can adjust the concurrency and workers alloted to this container.
   celery2:
-    container_name: celery-low-priority
+    container_name: shoonya-celery-low-priority
     restart: always
-    build: ./backend
+    image: shoonya-backend:local
     command: celery -A shoonya_backend.celery worker -Q functions --concurrency=2 --loglevel=info
     env_file:
-      - backend/.env
+      - config/local/celery.env
     volumes:
       - ./backend/:/usr/src/backend/
     depends_on:
@@ -87,8 +88,10 @@ services:
 
   # Celery beats - for scheduling daily e-mails
   celery-beat:
-    build: ./backend
+    image: shoonya-backend:local
     command: celery -A shoonya_backend.celery beat --loglevel=info
+    env_file:
+      - config/local/celery.env
     volumes:
       - ./backend/:/usr/src/backend
     depends_on:
