@@ -12,9 +12,9 @@ from tasks.models import Task, Annotation
 #### CELERY SHARED TASKS
 
 
-@shared_task(queue="default")
+@shared_task(queue="default", bind=True)
 def upload_data_to_data_instance(
-    dataset_string, pk, dataset_type, content_type, deduplicate=False
+    self, dataset_string, pk, dataset_type, content_type, deduplicate=False
 ):
     # sourcery skip: raise-specific-error
     """Celery background task to upload the data to the dataset instance through file upload.
