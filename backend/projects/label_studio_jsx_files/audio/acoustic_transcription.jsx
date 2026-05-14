@@ -19,7 +19,7 @@
   </View>
   <View style="overflow: auto; width: 50%;">
     <TextArea name="verbatim_transcribed_json" transcription="true" toName="audio_url" 
-      rows="2" editable="false" maxSubmissions="1"
+      rows="2" editable="true" maxSubmissions="1"
       perRegion="true" required="true" className="ignore_assertion"/>
   </View>
   <View style="display: none;">

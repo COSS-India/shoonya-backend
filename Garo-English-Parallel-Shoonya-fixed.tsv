@@ -1,0 +1,44 @@
+id	input_language	input_text	output_language	machine_translation	domain
+	English	How are you?	Garo	NAMENGAMA	General
+	English	I am fine.	Garo	NAMENGA	General
+	English	What is your name?	Garo	NANG'NI BIMING MAI?	General
+	English	My name is Togan Sangma.	Garo	ANGNI BIMING TOGAN SANGMA	General
+	English	Where are you going?	Garo	NA'A BACHI RE'ENGA?	General
+	English	I am going to bazaar.	Garo	ANGA BAGARCHI RE'ENGA?	General
+	English	What are you doing?	Garo	NA'AMAIKO GAKENGA?	General
+	English	I am cooking rice.	Garo	ANGA MISONG ENGA	General
+	English	Have you taken your meals?	Garo	NA'AMICHA' JOKMA?	General
+	English	Yes, eaten already.	Garo	O'E CHA'JOK V	General
+	English	It is hot at day time.	Garo	SALO SAL RAKA	General
+	English	It is cold at night.	Garo	WALO SIN'A	General
+	English	Flowers are beautiful.	Garo	PULRANG NITOA	General
+	English	Its cloudy.	Garo	ARAM SIMA	General
+	English	Perhaps it will rain.	Garo	MIKKA WAGENKOn	General
+	English	Where do you come from?	Garo	NA'BAONI RE'BBA?	General
+	English	I come from Asom.	Garo	ANGA ASOMONI RE'BBA	General
+	English	Are you a Garo?	Garo	NA'AA'CHIKMA?	General
+	English	Yes, I am a Garo.	Garo	O'E ANGA'CHIK	General
+	English	What clan do you belong to?	Garo	NA'AMAI MAHARI?	General
+	English	I am a Sangma.	Garo	ANGA SANGMA	General
+	English	Whom do you select to inherit property?	Garo	SAKO NOKNA RA'A?	General
+	English	One of the daughters	Garo	DEMECHIKRANGNI SAKSAKO	General
+	English	Where is your uncle?	Garo	MAMA BANO?	General
+	English	My uncle is there.	Garo	NANGAMAMADE UACHI	General
+	English	Prices of things are high.	Garo	BOSTURANGNI DAM RAKA	General
+	English	I cannot afford to buy.	Garo	ANGA BRENAAMJA	General
+	English	Roads are bad.	Garo	SOROKRANG NAMJA	General
+	English	Bridges have been broken.	Garo	DOLONGRANG BE JOK	General
+	English	Coals are being dug out.	Garo	KOILAKO BIKOTENGA	General
+	English	People are earning money.	Garo	TANGKA MAN TOKENGA	General
+	English	There are many mosquitoes.	Garo	GANGGUA BANG'A	General
+	English	People are suffering from malaria.	Garo	MANDERANG SAWAKA SATOKENGA	General
+	English	There is no medicine in the hospital.	Garo	HOSPITALO SAM DONGJA	General
+	English	Medicines are costly.	Garo	SAMNI DAM RAKA	General
+	English	Is your father at home?	Garo	NANGPA NOKO DONGAMA?	General
+	English	No, he has gone out.	Garo	INGHING UA ONGKATANGA	General
+	English	What is your mother doing?	Garo	NANGMA MAI DAKENGA?	General
+	English	She is cooking curry.	Garo	UA BIJAK SONG'ENGA	General
+	English	Do you like games?	Garo	NA'AKAL'NA NAMNIKAMA?	General
+	English	Yes, I enjoy games.	Garo	O'E ANGA KAL'NA NAMNIKAMA	General
+	English	What game do you like better?	Garo	MAIKO KAL'NA NAMNIKBATA?	General
+	English	I like football more.	Garo	ANGA ROBOL KAL'NA NAMNIKBATA	General

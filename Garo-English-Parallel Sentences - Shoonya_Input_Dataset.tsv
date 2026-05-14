@@ -1,0 +1,44 @@
+input_language	input_text	output_language	machine_translation	domain
+en	How are you?	grt	NAMENGAMA	general
+en	I am fine.	grt	NAMENGA	general
+en	What is your name?	grt	NANG'NI BIMING MAI?	general
+en	My name is Togan Sangma.	grt	ANGNI BIMING TOGAN SANGMA	general
+en	Where are you going?	grt	NA'A BACHI RE'ENGA?	general
+en	I am going to bazaar.	grt	ANGA BAGARCHI RE'ENGA?	general
+en	What are you doing?	grt	NA'AMAIKO GAKENGA?	general
+en	I am cooking rice.	grt	ANGA MISONG ENGA	general
+en	Have you taken your meals?	grt	NA'AMICHA' JOKMA?	general
+en	Yes, eaten already.	grt	O'E CHA'JOK V	general
+en	It is hot at day time.	grt	SALO SAL RAKA	general
+en	It is cold at night.	grt	WALO SIN'A	general
+en	Flowers are beautiful.	grt	PULRANG NITOA	general
+en	Its cloudy.	grt	ARAM SIMA	general
+en	Perhaps it will rain.	grt	MIKKA WAGENKOn	general
+en	Where do you come from?	grt	NA'BAONI RE'BBA?	general
+en	I come from Asom.	grt	ANGA ASOMONI RE'BBA	general
+en	Are you a Garo?	grt	NA'AA'CHIKMA?	general
+en	Yes, I am a Garo.	grt	O'E ANGA'CHIK	general
+en	What clan do you belong to?	grt	NA'AMAI MAHARI?	general
+en	I am a Sangma.	grt	ANGA SANGMA	general
+en	Whom do you select to inherit property?	grt	SAKO NOKNA RA'A?	general
+en	One of the daughters	grt	DEMECHIKRANGNI SAKSAKO	general
+en	Where is your uncle?	grt	MAMA BANO?	general
+en	My uncle is there.	grt	NANGAMAMADE UACHI	general
+en	Prices of things are high.	grt	BOSTURANGNI DAM RAKA	general
+en	I cannot afford to buy.	grt	ANGA BRENAAMJA	general
+en	Roads are bad.	grt	SOROKRANG NAMJA	general
+en	Bridges have been broken.	grt	DOLONGRANG BE JOK	general
+en	Coals are being dug out.	grt	KOILAKO BIKOTENGA	general
+en	People are earning money.	grt	TANGKA MAN TOKENGA	general
+en	There are many mosquitoes.	grt	GANGGUA BANG'A	general
+en	People are suffering from malaria.	grt	MANDERANG SAWAKA SATOKENGA	general
+en	There is no medicine in the hospital.	grt	HOSPITALO SAM DONGJA	general
+en	Medicines are costly.	grt	SAMNI DAM RAKA	general
+en	Is your father at home?	grt	NANGPA NOKO DONGAMA?	general
+en	No, he has gone out.	grt	INGHING UA ONGKATANGA	general
+en	What is your mother doing?	grt	NANGMA MAI DAKENGA?	general
+en	She is cooking curry.	grt	UA BIJAK SONG'ENGA	general
+en	Do you like games?	grt	NA'AKAL'NA NAMNIKAMA?	general
+en	Yes, I enjoy games.	grt	O'E ANGA KAL'NA NAMNIKAMA	general
+en	What game do you like better?	grt	MAIKO KAL'NA NAMNIKBATA?	general
+en	I like football more.	grt	ANGA ROBOL KAL'NA NAMNIKBATA	general
