@@ -1,7 +1,6 @@
 import pandas as pd
-import os
+
 from dataset.models import TranslationPair, DatasetBase, DatasetInstance
-import tqdm
 
 df = pd.read_csv("SentenceText-2022-05-01.csv")
 wiki = pd.read_csv("wiki-full-data.csv", names=["topic", "context", "sent"])
@@ -86,9 +85,8 @@ for lang in langs:
         en_lines = [x.strip() for x in en_lines]
 
     rows = []
-    for i, row in tqdm.tqdm(df.iterrows()):
-        dict_ = {}
-
+    for i, row in df.iterrows():
+        dict_ = dict()
         dict_["input_language"] = "English"
         dict_["input_text"] = row["text"]
         dict_["output_language"] = lang_dict[f"{lang}"]
