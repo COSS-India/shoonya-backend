@@ -1,16 +1,14 @@
-import os
 import requests
-from dotenv import load_dotenv
+from django.conf import settings
 
 
 def delete_elasticsearch_documents():
-    load_dotenv()
-    ELASTICSEARCH_URL = os.getenv("ELASTICSEARCH_URL")
-    INDEX_NAME = os.getenv("INDEX_NAME")
+    ELASTICSEARCH_URL = settings.ELASTICSEARCH_URL
+    INDEX_NAME = settings.INDEX_NAME
 
     if not ELASTICSEARCH_URL or not INDEX_NAME:
         print(
-            "Error: Ensure ELASTICSEARCH_URL and INDEX_NAME are defined in the .env file."
+            "Error: Ensure ELASTICSEARCH_URL and INDEX_NAME are defined in the environment."
         )
     else:
         # Elasticsearch Delete By Query request

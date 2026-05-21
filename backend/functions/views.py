@@ -29,8 +29,7 @@ from .utils import (
     check_if_particular_organization_owner,
     check_translation_function_inputs,
 )
-from dotenv import load_dotenv
-import os
+from django.conf import settings
 
 
 @api_view(["POST"])
@@ -772,7 +771,8 @@ def schedule_project_reports_email(request):
         )
         lock_status = 0  # if lock status is not received successfully, it is assumed that the lock doesn't exist
     if lock_status == 0:
-        celery_lock_timeout = int(os.getenv("DEFAULT_CELERY_LOCK_TIMEOUT"))
+        celery_lock_timeout = settings.DEFAULT_CELERY_LOCK_TIMEOUT
+
         try:
             celery_lock.setLock(celery_lock_timeout)
         except Exception as e:
@@ -873,7 +873,8 @@ def download_all_projects(request):
         )
         lock_status = 0  # if lock status is not received successfully, it is assumed that the lock doesn't exist
     if lock_status == 0:
-        celery_lock_timeout = int(os.getenv("DEFAULT_CELERY_LOCK_TIMEOUT"))
+        celery_lock_timeout = settings.DEFAULT_CELERY_LOCK_TIMEOUT
+
         try:
             celery_lock.setLock(celery_lock_timeout)
         except Exception as e:

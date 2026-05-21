@@ -1,8 +1,14 @@
-from azure.storage.blob import BlobServiceClient
 import os
+import django
 
-AZURE_STORAGE_CONNECTION_STRING = os.getenv("AZURE_CONNECTION_STRING")
-CONTAINER_NAME = os.getenv("CONTAINER_NAME")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "shoonya_backend.settings")
+django.setup()
+
+from azure.storage.blob import BlobServiceClient
+from django.conf import settings
+
+AZURE_STORAGE_CONNECTION_STRING = settings.AZURE_CONNECTION_STRING
+CONTAINER_NAME = settings.CONTAINER_NAME
 
 # Replace with your Azure Blob Storage connection string
 connection_string = AZURE_STORAGE_CONNECTION_STRING

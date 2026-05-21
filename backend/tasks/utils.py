@@ -1,7 +1,6 @@
-import os
 from requests import RequestException
 import requests
-from dotenv import load_dotenv
+from django.conf import settings
 
 Queued_Task_name = {
     "dataset.tasks.deduplicate_dataset_instance_items": "Deduplicate Dataset Instance Items",
@@ -32,13 +31,12 @@ Queued_Task_name = {
 
 def query_flower(filters=None):
     try:
-        load_dotenv()
-        address = os.getenv("FLOWER_ADDRESS")
-        port = int(os.getenv("FLOWER_PORT"))
+        address = settings.FLOWER_ADDRESS
+        port = settings.FLOWER_PORT
         flower_url = f"{address}:{port}"
         tasks_url = f"http://{flower_url}/api/tasks"
-        flower_username = os.getenv("FLOWER_USERNAME")
-        flower_password = os.getenv("FLOWER_PASSWORD")
+        flower_username = settings.FLOWER_USERNAME
+        flower_password = settings.FLOWER_PASSWORD
         response = requests.get(tasks_url, auth=(flower_username, flower_password))
 
         if response.status_code == 200:

@@ -2,10 +2,6 @@
 
 
 from django.db import migrations, models
-from django.db.models import Q
-from tasks.models import Annotation, Task
-from tasks.views import SentenceOperationViewSet
-from tqdm import tqdm
 
 
 class Migration(migrations.Migration):

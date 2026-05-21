@@ -12,7 +12,7 @@ services:
     volumes:
       - .data/postgres_data:/var/lib/postgresql/data/
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d main"]
+      test: [ "CMD-SHELL", "pg_isready -U admin -d main" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,7 +27,7 @@ services:
     volumes:
       - .data/redis:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -42,9 +42,9 @@ services:
     tty: true
     volumes:
       - ./backend/:/usr/src/backend/
-    command: python manage.py runserver 0.0.0.0:8000
-    ports:
-      - "8000:8000"
+    #    command: python manage.py runserver 0.0.0.0:8000
+    #    ports:
+    #      - "8000:8000"
     depends_on:
       db:
         condition: service_healthy

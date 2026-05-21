@@ -1,4 +1,3 @@
-import os
 from django.contrib import admin
 from django.urls import path, include, re_path
 from os.path import basename
@@ -7,6 +6,7 @@ from rest_framework import routers
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from drf_yasg.generators import OpenAPISchemaGenerator
+from django.conf import settings
 from tasks.views import (
     TaskViewSet,
     AnnotationViewSet,
@@ -32,7 +32,7 @@ SchemaView = get_schema_view(
         license=openapi.License(name="BSD License"),
     ),
     generator_class=BothHttpAndHttpsSchemaGenerator,
-    url=os.getenv("API_URL"),
+    url=settings.API_URL,
     public=True,
     permission_classes=[permissions.AllowAny],
 )

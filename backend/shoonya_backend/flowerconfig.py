@@ -1,14 +1,17 @@
-from dotenv import load_dotenv
 import os
+import django
 
-load_dotenv()
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "shoonya_backend.settings")
+django.setup()
 
-address = os.getenv("FLOWER_ADDRESS")
-port = int(os.getenv("FLOWER_PORT"))
-broker_url = os.getenv("CELERY_BROKER_URL")
-broker = os.getenv("CELERY_BROKER_URL")
+from django.conf import settings
+
+address = settings.FLOWER_ADDRESS
+port = settings.FLOWER_PORT
+broker_url = settings.CELERY_BROKER_URL
+broker = settings.CELERY_BROKER_URL
 
 # Enable basic authentication
-flower_username = os.getenv("FLOWER_USERNAME")
-flower_password = os.getenv("FLOWER_PASSWORD")
+flower_username = settings.FLOWER_USERNAME
+flower_password = settings.FLOWER_PASSWORD
 basic_auth = f"{flower_username}:{flower_password}"

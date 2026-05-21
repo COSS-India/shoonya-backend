@@ -1,12 +1,11 @@
 import base64
-import os
 from datetime import timezone
 import ast
 
 import requests
 from django.http import JsonResponse
 from requests.exceptions import RequestException
-from dotenv import load_dotenv
+from django.conf import settings
 from tasks.utils import Queued_Task_name
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -1495,9 +1494,9 @@ class TaskViewSet(viewsets.ModelViewSet, mixins.ListModelMixin):
 
         try:
             eos_client = Minio(
-                endpoint=os.getenv("MINIO_ENDPOINT"),
-                access_key=os.getenv("MINIO_ACCESS_KEY"),
-                secret_key=os.getenv("MINIO_SECRET_KEY"),
+                endpoint=settings.MINIO_ENDPOINT,
+                access_key=settings.MINIO_ACCESS_KEY,
+                secret_key=settings.MINIO_SECRET_KEY,
                 secure=True,
             )
         except Exception as e:

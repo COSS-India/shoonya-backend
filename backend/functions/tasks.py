@@ -17,7 +17,7 @@ from projects.utils import (
     get_not_null_audio_transcription_duration,
 )
 from projects.views import get_task_count_unassigned, ProjectViewSet
-from shoonya_backend import settings
+from django.conf import settings
 from tasks.models import (
     Annotation,
     ANNOTATOR_ANNOTATION,
@@ -1704,10 +1704,8 @@ def schedule_mail_to_download_all_projects(
 def upload_all_projects_to_blob_and_get_url(csv_files_directory):
     date_time_string = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     zip_file_name = f"output_all_projects - {date_time_string}.zip"
-    AZURE_STORAGE_CONNECTION_STRING = os.getenv("AZURE_CONNECTION_STRING")
-    CONTAINER_NAME_FOR_DOWNLOAD_ALL_PROJECTS = os.getenv(
-        "CONTAINER_NAME_FOR_DOWNLOAD_ALL_PROJECTS"
-    )
+    AZURE_STORAGE_CONNECTION_STRING = settings.AZURE_CONNECTION_STRING
+    CONTAINER_NAME_FOR_DOWNLOAD_ALL_PROJECTS = settings.CONTAINER_NAME_FOR_DOWNLOAD_ALL_PROJECTS
     try:
         blob_service_client = BlobServiceClient.from_connection_string(
             AZURE_STORAGE_CONNECTION_STRING

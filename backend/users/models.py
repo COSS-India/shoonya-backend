@@ -1,4 +1,3 @@
-import os
 from smtplib import (
     SMTPAuthenticationError,
     SMTPException,
@@ -21,8 +20,7 @@ from django_celery_beat.models import PeriodicTask
 
 from organizations.models import Organization
 from workspaces.models import Workspace
-from shoonya_backend import settings
-from dotenv import load_dotenv
+from django.conf import settings
 
 from .utils import hash_upload
 from .managers import UserManager
@@ -31,7 +29,6 @@ from utils.constants import LANG_CHOICES
 
 # List of Indic languages
 
-load_dotenv()
 # Create your models here.
 # class Language(models.Model):
 #     language = models.CharField(
@@ -256,7 +253,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def send_mail_to_change_password(self, email, key):
         sent_token = self.generate_reset_token(key)
-        prefix = os.getenv("FRONTEND_URL_FOR_RESET_PASSWORD")
+        prefix = settings.FRONTEND_URL_FOR_RESET_PASSWORD
         link = f"{prefix}/#/forget-password/confirm/{key}/{sent_token}"
         try:
             subject = "Reset Password Link For Shoonya"
@@ -292,7 +289,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def generate_reset_token(self, user_id):
         # Setting token expiration time (2 hours)
         expiration_time = datetime.utcnow() + timedelta(hours=2)
-        secret_key = os.getenv("SECRET_KEY_RESET_PASSWORD")
+        secret_key = settings.SECRET_KEY_RESET_PASSWORD
 
         # Creating the payload containing user ID and expiration time
         payload = {

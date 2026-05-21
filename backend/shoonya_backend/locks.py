@@ -1,9 +1,8 @@
-import os
 import json
 import redis
 import time
 import logging
-from dotenv import load_dotenv
+from django.conf import settings
 
 """
 The locks are stored in redis with the format
@@ -21,9 +20,8 @@ class LockException(Exception):
 
 class Lock:
     def __init__(self, user_id, task_name):
-        load_dotenv()
-        self.redis_host = os.getenv("REDIS_HOST")
-        self.redis_port = os.getenv("REDIS_PORT")
+        self.redis_host = settings.REDIS_HOST
+        self.redis_port = settings.REDIS_PORT
         self.redis_connection = redis.StrictRedis(
             host=self.redis_host, port=self.redis_port, db=0
         )
