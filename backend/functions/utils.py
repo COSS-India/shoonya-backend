@@ -1,24 +1,23 @@
 import json
-import os
 import re
-from django.conf import settings
 
 import requests
-from dataset import models as dataset_models
+from django.conf import settings
 from google.cloud import translate_v2 as translate
+from google.cloud import vision
 from google.oauth2 import service_account
 from rest_framework import status
+
+from dataset import models as dataset_models
 from organizations.models import Organization
 from users.models import User
 from users.utils import (
     DEFAULT_ULCA_INDIC_TO_INDIC_MODEL_ID,
     LANG_NAME_TO_CODE_GOOGLE,
-    LANG_NAME_TO_CODE_ULCA,
     LANG_TRANS_MODEL_CODES,
     LANG_NAME_TO_CODE_AZURE,
     LANG_NAME_TO_CODE_ITV2,
 )
-from google.cloud import vision
 from users.utils import LANG_NAME_TO_CODE_ULCA
 
 try:

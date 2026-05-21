@@ -20,7 +20,6 @@ from pygments.styles import default
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -102,7 +101,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "shoonya_backend.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -116,7 +114,6 @@ DATABASES = {
         "PORT": config("DB_PORT"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -136,7 +133,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -147,7 +143,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -170,16 +165,15 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "shoonya_backend.pagination.CustomPagination",
 }
 
-
 # Email Settings
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = config("EMAIL_HOST")
-EMAIL_PORT = config("EMAIL_PORT")
-EMAIL_HOST_USER = config("SMTP_USERNAME")
+EMAIL_PORT = config("EMAIL_PORT", cast=int, default=0)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default='')
 EMAIL_HOST_PASSWORD = config("SMTP_PASSWORD")
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default='no-reply-admin@coss-shoonya.org')
 
 DOMAIN = config("DOMAIN")
 SITE_NAME = config("SITE_NAME")
@@ -291,7 +285,6 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERY_BROKER_URL = config("CELERY_BROKER_URL")
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
-
 # Project lock TTL for task pulling(in seconds)
 PROJECT_LOCK_TTL = 5
 PROJECT_LOCK_RETRY_INTERVAL = 1
@@ -310,7 +303,8 @@ CONTAINER_NAME_FOR_DOWNLOAD_ALL_PROJECTS = config("CONTAINER_NAME_FOR_DOWNLOAD_A
 # Azure Translator
 AZURE_TRANSLATOR_TEXT_SUBSCRIPTION_KEY = config("AZURE_TRANSLATOR_TEXT_SUBSCRIPTION_KEY", default='')
 AZURE_TRANSLATOR_TEXT_REGION = config("AZURE_TRANSLATOR_TEXT_REGION", default='')
-AZURE_TRANSLATOR_TEXT_ENDPOINT = config("AZURE_TRANSLATOR_TEXT_ENDPOINT", default='https://api.cognitive.microsofttranslator.com')
+AZURE_TRANSLATOR_TEXT_ENDPOINT = config("AZURE_TRANSLATOR_TEXT_ENDPOINT",
+                                        default='https://api.cognitive.microsofttranslator.com')
 
 # Indic Trans APIs
 INDIC_TRANS_NMT_API = config("INDIC_TRANS_NMT_API", default='')
@@ -347,5 +341,3 @@ INDIC_ROMANISED_LOGS = config("INDIC_ROMANISED_LOGS", default='')
 API_URL = config("API_URL", default='')
 REDIS_HOST = config("REDIS_HOST", default='')
 REDIS_PORT = config("REDIS_PORT", default=6379, cast=int)
-
-

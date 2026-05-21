@@ -13,10 +13,12 @@ djangorestframework-simplejwt==5.5.1
 djangorestframework==3.15.2
 djoser==2.3.3
 drf-yasg==1.21.15
+google-cloud-translate==3.26.0
+google-cloud-vision==3.14.0
 gunicorn==25.3.0
-httpx
+httpx==0.28.1
 indic-nlp-library==0.92
-ipython
+ipython==9.13.0
 jiwer==4.0.0
 joblib==1.5.3
 label-studio-converter==0.0.59
@@ -32,9 +34,9 @@ oauthlib==3.3.1
 openpyxl==3.1.5
 pandas==3.0.2
 Pillow==12.2.0
-pretty-html-table
+pretty-html-table==0.9.16
 psycopg[all]
-pycgi
+pycgi==0.1a3
 python-decouple==3.8
 pydub==0.25.1
 PyJWT==2.12.1
@@ -43,6 +45,7 @@ rapidfuzz==3.14.5
 redis==3.5.3
 rules==3.4
 sacrebleu==2.6.0
+setuptools<=70
 tablib==3.9.0
 whitenoise==6.12.0
 xlrd==2.0.2

@@ -1,8 +1,9 @@
-from yaml import safe_load
-import lxml.etree as etree
 import os
 
+import lxml.etree as etree
 from label_studio.core.label_config import validate_label_config
+from yaml import safe_load
+
 from dataset import models
 
 PROJECTS_PATH = os.path.dirname(__file__)
@@ -43,7 +44,7 @@ class ProjectRegistry:
         for domain_name, domain_data in self.data.items():
             for project_key, project_type in domain_data["project_types"].items():
                 assert (
-                    project_key not in self.project_types
+                        project_key not in self.project_types
                 ), f"Project-type: `{project_key}` seems to be defined more than once"
 
                 # Cache additional details
@@ -111,7 +112,7 @@ class ProjectRegistry:
         return self.project_types[project_type]["label_studio_jsx_payload"]
 
     def check_jsx_file_integrity(
-        self, label_studio_jsx_file, input_fields, output_fields
+            self, label_studio_jsx_file, input_fields, output_fields
     ):
         """
         Checks the integrity of JSX project template
@@ -141,13 +142,13 @@ class ProjectRegistry:
                 continue
             if ignore_assertion != "ignore_assertion":
                 assert (
-                    input_node.attrib["name"] in input_fields
+                        input_node.attrib["name"] in input_fields
                 ), f'[{label_studio_jsx_file}]: Input field `{input_node.attrib["name"]}` not found in dataset model'
                 assert input_node.attrib["value"].startswith(
                     "$"
                 ), f"[{label_studio_jsx_file}]: Input variable `{input_node.attrib['value']}` should begin with $"
                 assert (
-                    input_node.attrib["value"][1:] in input_fields
+                        input_node.attrib["value"][1:] in input_fields
                 ), f"[{label_studio_jsx_file}]: Input variable `{input_node.attrib['value']}` not found in dataset model"
 
         # Check if output fields are properly named
@@ -157,10 +158,10 @@ class ProjectRegistry:
             ignore_assertion = output_node.attrib.get("className", "assertion")
             if ignore_assertion != "ignore_assertion":
                 assert (
-                    output_node.attrib["name"] in output_fields
+                        output_node.attrib["name"] in output_fields
                 ), f'[{label_studio_jsx_file}]: Output field `{output_node.attrib["name"]}` not found in dataset model'
             assert (
-                output_node.attrib["toName"] in input_fields
+                    output_node.attrib["toName"] in input_fields
             ), f'[{label_studio_jsx_file}]: Input field `{output_node.attrib["toName"]}` not found in dataset model'
 
     def validate_registry(self):
@@ -179,10 +180,10 @@ class ProjectRegistry:
                 # Check if dataset classes are valid
                 if project_type["project_mode"] == "Annotation":
                     assert (
-                        project_type["input_dataset"]["class"] in model_list
+                            project_type["input_dataset"]["class"] in model_list
                     ), f'Input Dataset "{project_type["input_dataset"]["class"]}" does not exist.'
                     assert (
-                        project_type["output_dataset"]["class"] in model_list
+                            project_type["output_dataset"]["class"] in model_list
                     ), f'Output Dataset "{project_type["output_dataset"]["class"]}" does not exist.'
 
                     # Get all members inside the respective classes
@@ -194,13 +195,13 @@ class ProjectRegistry:
                     input_dataset = project_type["input_dataset"]
                     for field in input_dataset["fields"]:
                         assert (
-                            field in input_model_fields
+                                field in input_model_fields
                         ), f'Field "{field}" not present in Input Dataset "{input_dataset["class"]}"'
 
                     # Check if prediction key is correctly mapped
                     if "prediction" in input_dataset:
                         assert (
-                            input_dataset["prediction"] in input_model_fields
+                                input_dataset["prediction"] in input_model_fields
                         ), f'Field "{input_dataset["prediction"]}" not present in Input Dataset "{input_dataset["class"]}"'
 
                 output_model_fields = dir(
@@ -211,12 +212,12 @@ class ProjectRegistry:
                 output_dataset = project_type["output_dataset"]
                 for field in output_dataset["fields"]["annotations"]:
                     assert (
-                        field in output_model_fields
+                            field in output_model_fields
                     ), f'Annotation field "{field}" not present in Output Dataset "{output_dataset["class"]}"'
                 if "variable_parameters" in output_dataset["fields"]:
                     for field in output_dataset["fields"]["variable_parameters"]:
                         assert (
-                            field in output_model_fields
+                                field in output_model_fields
                         ), f'Variable Parameter field "{field}" not present in Output Dataset "{output_dataset["class"]}"'
 
                 # Check if input-output mapping is proper
@@ -226,10 +227,10 @@ class ProjectRegistry:
                         "copy_from_input"
                     ].items():
                         assert (
-                            input_field in input_model_fields
+                                input_field in input_model_fields
                         ), f'copy_from_input field "{input_field}" not present in Input Dataset "{input_dataset["class"]}"'
                         assert (
-                            output_field in output_model_fields
+                                output_field in output_model_fields
                         ), f'copy_from_input field "{output_field}" not present in Output Dataset "{output_dataset["class"]}"'
 
                 if project_type["project_mode"] == "Annotation":
@@ -260,8 +261,8 @@ class ProjectRegistry:
             output_dataset = project_type.get("output_dataset", {})
 
             if (
-                input_dataset.get("class") == dataset_name
-                or output_dataset.get("class") == dataset_name
+                    input_dataset.get("class") == dataset_name
+                    or output_dataset.get("class") == dataset_name
             ):
                 return project_key
         return None
