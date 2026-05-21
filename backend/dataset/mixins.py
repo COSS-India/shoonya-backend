@@ -1,3 +1,4 @@
+#TODO: Deprecate tablib it is being used here, use pandas instead.
 import tablib
 from django.db.models.query import QuerySet
 
@@ -8,10 +9,10 @@ class ResourceMixin:
     """
 
     def export_as_generator(self, export_type, queryset=None, *args, **kwargs):
-        self.before_export(queryset, *args, **kwargs)
+        self.before_export(queryset, *args, **kwargs) # Defaults to doing nothing.
         if queryset is None:
             queryset = self.get_queryset()
-        headers = self.get_export_headers()
+        headers: list[str] = self.get_export_headers()
         data = tablib.Dataset(headers=headers)
         # Return headers
         if export_type == "tsv":

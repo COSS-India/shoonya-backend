@@ -5,12 +5,6 @@ from shoonya_backend.settings import AUTH_USER_MODEL
 from shoonya_backend.mixins import DummyModelMixin
 import secrets
 from django.core.mail import EmailMultiAlternatives
-import os
-from dotenv import load_dotenv
-
-
-load_dotenv()
-
 from django.conf import settings
 
 # Create your models here.
@@ -123,7 +117,7 @@ class Invite(models.Model):
 
     @classmethod
     def send_invite_email(cls, invite, user):
-        base_url = os.getenv("BASE_URL")
+        base_url = settings.BASE_URL
         subject = "Invitation to join Organization"
         invite_link = f"https://{base_url}/#/invite/{invite.invite_code}"
         text_content = f"Hello! You are invited to Shoonya. Your Invite link is: "

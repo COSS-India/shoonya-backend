@@ -1,5 +1,4 @@
 import json
-import os
 from http.client import responses
 import secrets
 import string
@@ -59,7 +58,6 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from workspaces.views import WorkspaceCustomViewSet
 from .utils import generate_random_string, get_role_name
 from rest_framework_simplejwt.tokens import RefreshToken
-from dotenv import load_dotenv
 import logging
 from workspaces.views import WorkspaceusersViewSet
 from utils.constants import LANG_CHOICES
@@ -68,7 +66,6 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
-load_dotenv()
 
 
 class InviteViewSet(viewsets.ViewSet):
@@ -577,7 +574,7 @@ class AuthViewSet(viewsets.ViewSet):
                 raise Exception("Insufficient details")
             user = User.objects.get(id=user_id)
             try:
-                secret_key = os.getenv("SECRET_KEY_RESET_PASSWORD")
+                secret_key = settings.SECRET_KEY_RESET_PASSWORD
                 decodedToken = jwt.decode(received_token, secret_key, "HS256")
             except InvalidSignatureError:
                 raise Exception(
@@ -857,10 +854,8 @@ class UserViewSet(viewsets.ViewSet):
             file_upload_name = user.username + file_extension
             try:
                 blob = BlobClient.from_connection_string(
-                    conn_str=os.getenv("STORAGE_ACCOUNT_CONNECTION_STRING"),
-                    container_name=os.getenv(
-                        "STORAGE_ACCOUNT_PROFILE_IMAGE_CONTAINER_NAME"
-                    ),
+                    conn_str=settings.STORAGE_ACCOUNT_CONNECTION_STRING,
+                    container_name=settings.STORAGE_ACCOUNT_PROFILE_IMAGE_CONTAINER_NAME,
                     blob_name=file_upload_name,
                 )
                 blob.upload_blob(BytesIO(file.read()), overwrite=True)

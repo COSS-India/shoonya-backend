@@ -10,16 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-import logging
 import os
 from datetime import timedelta
 from pathlib import Path
-from dotenv import load_dotenv
 
-load_dotenv()
-
-if os.getenv("GOOGLE_APPLICATION_CREDENTIALS"):
-    from google.cloud import logging as gc_logging
+from decouple import config, Csv
+from pygments.styles import default
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,12 +25,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = config("SECRET_KEY")
+
+SECRET_KEY_RESET_PASSWORD = config("SECRET_KEY_RESET_PASSWORD")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("ENV") == "dev"
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv(), default=[])
 
 # Application definition
 
@@ -64,8 +62,6 @@ INSTALLED_APPS = [
     "django.contrib.postgres",
 ]
 
-CSRF_COOKIE_SECURE = False
-
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -77,6 +73,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
+
+CSRF_COOKIE_SECURE = False
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -111,11 +109,11 @@ WSGI_APPLICATION = "shoonya_backend.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.getenv("DB_HOST"),
-        "PORT": os.getenv("DB_PORT"),
+        "NAME": config("DB_NAME"),
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PASSWORD"),
+        "HOST": config("DB_HOST"),
+        "PORT": config("DB_PORT"),
     }
 }
 
@@ -151,11 +149,6 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.0/howto/static-files/
-
-STATIC_URL = "static/"
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
@@ -180,16 +173,16 @@ REST_FRAMEWORK = {
 
 # Email Settings
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_PORT = os.getenv("EMAIL_PORT")
-EMAIL_HOST_USER = os.getenv("SMTP_USERNAME")
-EMAIL_HOST_PASSWORD = os.getenv("SMTP_PASSWORD")
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_PORT = config("EMAIL_PORT")
+EMAIL_HOST_USER = config("SMTP_USERNAME")
+EMAIL_HOST_PASSWORD = config("SMTP_PASSWORD")
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
-DOMAIN = os.getenv("DOMAIN")
-SITE_NAME = os.getenv("SITE_NAME")
+DOMAIN = config("DOMAIN")
+SITE_NAME = config("SITE_NAME")
 
 DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "#/forget-password/confirm/{uid}/{token}",
@@ -211,7 +204,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 102400  # higher than the count of fields
 # Logging Configuration
 
 # # Get loglevel from env
-LOGLEVEL = os.getenv("LOG_LEVEL", "INFO")
+LOGLEVEL = config("LOG_LEVEL", default="INFO")
 
 # Define the list of formatters
 formatters = {
@@ -241,7 +234,7 @@ handlers = {
 }
 
 # If logging is enabled, add file handlers
-if os.getenv("LOGGING", "False").lower() in ("true", "1", "t", "yes", "y"):
+if config("LOGGING", default=False, cast=bool):
     # Make a new directory for logs
     Path("/logs/logs_web").mkdir(exist_ok=True)
     handlers["file"] = {
@@ -294,11 +287,65 @@ LOGGING = {
 CELERY_IMPORTS = ("users.tasks", "shoonya_backend.tasks")
 
 # Celery settings
-CELERY_TIMEZONE = "Asia/Kolkata"
-CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BROKER_URL = config("CELERY_BROKER_URL")
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 
 # Project lock TTL for task pulling(in seconds)
 PROJECT_LOCK_TTL = 5
 PROJECT_LOCK_RETRY_INTERVAL = 1
+
+AZURE_STORAGE_CONNECTION_STRING = config("AZURE_STORAGE_CONNECTION_STRING", default='')
+TRANSLITERATION_CONTAINER_NAME = config("TRANSLITERATION_CONTAINER_NAME", default='')
+
+# Azure connections
+AZURE_CONNECTION_STRING = config("AZURE_CONNECTION_STRING", default='')
+STORAGE_ACCOUNT_CONNECTION_STRING = config("STORAGE_ACCOUNT_CONNECTION_STRING", default='')
+STORAGE_ACCOUNT_PROFILE_IMAGE_CONTAINER_NAME = config("STORAGE_ACCOUNT_PROFILE_IMAGE_CONTAINER_NAME", default='')
+LOGS_CONTAINER_NAME = config("LOGS_CONTAINER_NAME", default='')
+CONTAINER_NAME = config("CONTAINER_NAME", default='')
+CONTAINER_NAME_FOR_DOWNLOAD_ALL_PROJECTS = config("CONTAINER_NAME_FOR_DOWNLOAD_ALL_PROJECTS", default='')
+
+# Azure Translator
+AZURE_TRANSLATOR_TEXT_SUBSCRIPTION_KEY = config("AZURE_TRANSLATOR_TEXT_SUBSCRIPTION_KEY", default='')
+AZURE_TRANSLATOR_TEXT_REGION = config("AZURE_TRANSLATOR_TEXT_REGION", default='')
+AZURE_TRANSLATOR_TEXT_ENDPOINT = config("AZURE_TRANSLATOR_TEXT_ENDPOINT", default='https://api.cognitive.microsofttranslator.com')
+
+# Indic Trans APIs
+INDIC_TRANS_NMT_API = config("INDIC_TRANS_NMT_API", default='')
+INDIC_TRANS_V2_URL = config("INDIC_TRANS_V2_URL", default='')
+INDIC_TRANS_V2_KEY = config("INDIC_TRANS_V2_KEY", default='')
+
+# Google
+GOOGLE_APPLICATION_CREDENTIALS = config("GOOGLE_APPLICATION_CREDENTIALS", default='{}')
+
+# ASR Dhruva
+ASR_DHRUVA_URL = config("ASR_DHRUVA_URL", default='')
+ASR_DHRUVA_AUTHORIZATION = config("ASR_DHRUVA_AUTHORIZATION", default='')
+
+# Celery Flower
+FLOWER_ADDRESS = config("FLOWER_ADDRESS", default='')
+FLOWER_PORT = config("FLOWER_PORT", default=5555, cast=int)
+FLOWER_USERNAME = config("FLOWER_USERNAME", default='')
+FLOWER_PASSWORD = config("FLOWER_PASSWORD", default='')
+
+# MinIO
+MINIO_ENDPOINT = config("MINIO_ENDPOINT", default='')
+MINIO_ACCESS_KEY = config("MINIO_ACCESS_KEY", default='')
+MINIO_SECRET_KEY = config("MINIO_SECRET_KEY", default='')
+
+# Elasticsearch
+ELASTICSEARCH_URL = config("ELASTICSEARCH_URL", default='')
+INDEX_NAME = config("INDEX_NAME", default='')
+
+# Misc
+FRONTEND_URL_FOR_RESET_PASSWORD = config("FRONTEND_URL_FOR_RESET_PASSWORD", default='')
+DEFAULT_CELERY_LOCK_TIMEOUT = config("DEFAULT_CELERY_LOCK_TIMEOUT", default=0, cast=int)
+BASE_URL = config("BASE_URL", default='')
+INDIC_ROMANISED_LOGS = config("INDIC_ROMANISED_LOGS", default='')
+API_URL = config("API_URL", default='')
+REDIS_HOST = config("REDIS_HOST", default='')
+REDIS_PORT = config("REDIS_PORT", default=6379, cast=int)
+
+

@@ -1,7 +1,7 @@
 import requests
 from urllib.parse import urlencode
 import traceback
-import os
+from django.conf import settings
 
 
 class AzureTranslator:
@@ -59,9 +59,9 @@ class AzureTranslator:
 # Create a translator instance
 try:
     translator_object = AzureTranslator(
-        os.environ["AZURE_TRANSLATOR_TEXT_SUBSCRIPTION_KEY"],
-        os.environ["AZURE_TRANSLATOR_TEXT_REGION"],
-        os.environ["AZURE_TRANSLATOR_TEXT_ENDPOINT"],
+        settings.AZURE_TRANSLATOR_TEXT_SUBSCRIPTION_KEY,
+        settings.AZURE_TRANSLATOR_TEXT_REGION,
+        settings.AZURE_TRANSLATOR_TEXT_ENDPOINT,
     )
-except:
+except Exception:
     pass

@@ -12,16 +12,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from rest_framework.decorators import action
 
-import os
 import json
 import datetime
-from dotenv import load_dotenv
+from django.conf import settings
 
-load_dotenv()
-
-AZURE_STORAGE_CONNECTION_STRING = os.getenv("AZURE_CONNECTION_STRING")
-TRANSLITERATION_CONTAINER_NAME = os.getenv("TRANSLITERATION_CONTAINER_NAME")
-INDIC_ROMANISED_LOGS = os.getenv("INDIC_ROMANISED_LOGS")
+AZURE_STORAGE_CONNECTION_STRING = settings.AZURE_CONNECTION_STRING
+TRANSLITERATION_CONTAINER_NAME = settings.TRANSLITERATION_CONTAINER_NAME
+INDIC_ROMANISED_LOGS = settings.INDIC_ROMANISED_LOGS
 
 
 class CustomJSONEncoder(json.JSONEncoder):

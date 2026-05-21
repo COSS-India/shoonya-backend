@@ -1,6 +1,7 @@
 import json
 import os
 import re
+from django.conf import settings
 
 import requests
 from dataset import models as dataset_models
@@ -191,7 +192,7 @@ def get_batch_translations_using_indictrans_nmt_api(
 
     try:
         response = requests.post(
-            os.getenv("INDIC_TRANS_NMT_API"),
+            settings.INDIC_TRANS_NMT_API,
             json=json_data,
         )
 
@@ -254,9 +255,9 @@ def get_batch_translations_using_indictransv2_nmt_api(
 
     try:
         response = requests.post(
-            os.getenv("INDIC_TRANS_V2_URL"),
+            settings.INDIC_TRANS_V2_URL,
             json=json_data,
-            headers={"authorization": os.getenv("INDIC_TRANS_V2_KEY")},
+            headers={"authorization": settings.INDIC_TRANS_V2_KEY},
         )
 
         translations_output = response.json()["output"]
@@ -491,7 +492,7 @@ def get_batch_ocr_predictions(id, image_url, api_type):
 def get_batch_ocr_predictions_using_google(id, image_url):
     # Creating a Google Cloud Vision client
     try:
-        credentials = json.loads(os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "{}"))
+        credentials = json.loads(settings.GOOGLE_APPLICATION_CREDENTIALS)
         google_credentials = service_account.Credentials.from_service_account_info(
             credentials
         )
@@ -589,8 +590,8 @@ def get_batch_asr_predictions(id, audio_url, api_type, language):
 
 
 def get_batch_asr_predictions_using_dhruva_asr(cur_id, audio_url, language):
-    url = os.getenv("ASR_DHRUVA_URL")
-    header = {"Authorization": os.getenv("ASR_DHRUVA_AUTHORIZATION")}
+    url = settings.ASR_DHRUVA_URL
+    header = {"Authorization": settings.ASR_DHRUVA_AUTHORIZATION}
     if language == "Hindi":
         serviceId = "ai4bharat/conformer-hi-gpu--t4"
         languageCode = LANG_NAME_TO_CODE_ULCA[language]

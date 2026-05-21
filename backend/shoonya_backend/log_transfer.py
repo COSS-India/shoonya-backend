@@ -4,14 +4,12 @@ import zipfile
 from azure.storage.blob import BlobServiceClient
 from celery import shared_task
 from azure.core.exceptions import AzureError, ResourceNotFoundError
-from dotenv import load_dotenv
+from django.conf import settings
 from loging.utils import delete_elasticsearch_documents
 from utils.blob_functions import test_container_connection
 
-load_dotenv()
-
-AZURE_STORAGE_CONNECTION_STRING = os.getenv("AZURE_CONNECTION_STRING")
-CONTAINER_NAME = os.getenv("LOGS_CONTAINER_NAME")
+AZURE_STORAGE_CONNECTION_STRING = settings.AZURE_CONNECTION_STRING
+CONTAINER_NAME = settings.LOGS_CONTAINER_NAME
 MAX_FILE_SIZE_LIMIT = 15000000000
 
 log_file_dir = "/logs/logs_web/"

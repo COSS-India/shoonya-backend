@@ -1,18 +1,16 @@
-from celery import shared_task
 from datetime import datetime
+
 from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
-from django.core.mail import EmailMessage, EmailMultiAlternatives
+from celery import shared_task
 from django.conf import settings
-from utils.email_template import send_email_template_with_attachment
+from django.core.mail import EmailMultiAlternatives
+
 from utils.blob_functions import (
     extract_account_key,
     extract_account_name,
     extract_endpoint_suffix,
 )
-import os
-
-AZURE_STORAGE_CONNECTION_STRING = os.getenv("AZURE_CONNECTION_STRING")
-TRANSLITERATION_CONTAINER_NAME = os.getenv("TRANSLITERATION_CONTAINER_NAME")
+from utils.email_template import send_email_template_with_attachment
 
 
 def get_azure_credentials(connection_string):
@@ -65,10 +63,10 @@ def send_email_with_url(user_email, attachment_url):
 def retrieve_logs_and_send_through_email(start_date_str, end_date_str, user_email):
     try:
         blob_service_client = BlobServiceClient.from_connection_string(
-            AZURE_STORAGE_CONNECTION_STRING
+            settings.AZURE_STORAGE_CONNECTION_STRING
         )
         container_client = blob_service_client.get_container_client(
-            TRANSLITERATION_CONTAINER_NAME
+            settings.TRANSLITERATION_CONTAINER_NAME
         )
 
         if not start_date_str and not end_date_str:
@@ -111,10 +109,10 @@ def retrieve_logs_and_send_through_email(start_date_str, end_date_str, user_emai
         file_name_with_prefix = f"temp_{file_name}"
 
         blob_service_client = BlobServiceClient.from_connection_string(
-            AZURE_STORAGE_CONNECTION_STRING
+            settings.AZURE_STORAGE_CONNECTION_STRING
         )
         container_client = blob_service_client.get_container_client(
-            TRANSLITERATION_CONTAINER_NAME
+            settings.TRANSLITERATION_CONTAINER_NAME
         )
         blob_client = container_client.get_blob_client(file_name_with_prefix)
         blob_client.upload_blob(log_content, overwrite=True)
@@ -122,11 +120,11 @@ def retrieve_logs_and_send_through_email(start_date_str, end_date_str, user_emai
         expiry = datetime.datetime.utcnow() + datetime.timedelta(hours=1)
 
         account_key, account_name, endpoint_suffix = get_azure_credentials(
-            AZURE_STORAGE_CONNECTION_STRING
+            settings.AZURE_STORAGE_CONNECTION_STRING
         )
 
         sas_token = generate_blob_sas(
-            container_name=TRANSLITERATION_CONTAINER_NAME,
+            container_name=settings.TRANSLITERATION_CONTAINER_NAME,
             blob_name=blob_client.blob_name,
             account_name=account_name,
             account_key=account_key,
@@ -134,7 +132,7 @@ def retrieve_logs_and_send_through_email(start_date_str, end_date_str, user_emai
             expiry=expiry,
         )
 
-        blob_url = f"https://{account_name}.blob.{endpoint_suffix}/{TRANSLITERATION_CONTAINER_NAME}/{blob_client.blob_name}?{sas_token}"
+        blob_url = f"https://{account_name}.blob.{endpoint_suffix}/{settings.TRANSLITERATION_CONTAINER_NAME}/{blob_client.blob_name}?{sas_token}"
         send_email_with_url.delay(user_email, blob_url)
 
     except Exception as e:
