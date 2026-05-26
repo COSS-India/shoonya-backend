@@ -1,134 +1,176 @@
-version: '3.3'
-
 services:
-  nginx:
-    build: ./nginx
-    image: evgeniy-khyst/nginx
-    env_file:
-      - ./config.env
-    volumes:
-      - nginx_conf:/etc/nginx/sites
-      - letsencrypt_certs:/etc/letsencrypt
-      - certbot_acme_challenge:/var/www/certbot
-      - ./vhosts:/etc/nginx/vhosts
-      - static_volume:/backend/static
+  # TODO: Enable nginx redirection instead of direct port exposition.
+#  nginx:
+#    build: ./nginx
+#    image: eveniy-khyst/nginxg
+#    env_file:
+#      - ./config.env
+#    volumes:
+#      - nginx_conf:/etc/nginx/sites
+#      - letsencrypt_certs:/etc/letsencrypt
+#      - certbot_acme_challenge:/var/www/certbot
+#      - ./vhosts:/etc/nginx/vhosts
+#      - static_volume:/backend/static
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    restart: unless-stopped
+#
+#  certbot:
+#    build: ./certbot
+#    image: evgeniy-khyst/certbot
+#    env_file:
+#      - ./config.env
+#    volumes:
+#      - letsencrypt_certs:/etc/letsencrypt
+#      - certbot_acme_challenge:/var/www/certbot
+#
+#  cron:
+#    build: ./cron
+#    image: evgeniy-khyst/cron
+#    environment:
+#      COMPOSE_PROJECT_NAME: "${COMPOSE_PROJECT_NAME}"
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#      - ./:/workdir:ro
+#    restart: unless-stopped
+
+  db:
+    restart: always
+    image: postgres:17
+    container_name: shoonya-backend-db
     ports:
-      - "80:80"
-      - "443:443"
-    restart: unless-stopped
-
-  certbot:
-    build: ./certbot
-    image: evgeniy-khyst/certbot
-    env_file:
-      - ./config.env
-    volumes:
-      - letsencrypt_certs:/etc/letsencrypt
-      - certbot_acme_challenge:/var/www/certbot
-
-  cron:
-    build: ./cron
-    image: evgeniy-khyst/cron
+      - "5432:5432"
     environment:
-      COMPOSE_PROJECT_NAME: "${COMPOSE_PROJECT_NAME}"
+      - "POSTGRES_USER=admin"
+      - "POSTGRES_PASSWORD=root"
+      - "POSTGRES_DB=main"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./:/workdir:ro
-    restart: unless-stopped
-    
+      - .data/postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d main" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   web:
     build: ./backend
-    command: gunicorn --bind 0.0.0.0:8000 --workers 4 shoonya_backend.wsgi --timeout 300
+    image: shoonya-backend:dev
+    container_name: shoonya-backend-backend
+    restart: always
+    env_file:
+      - config/dev/backend.env
+    tty: true
     volumes:
       - ./backend/:/usr/src/backend/
-      - static_volume:/usr/src/backend/static
-      - logs_vol:/logs
+      - .data/backend/static:/usr/src/backend/static
+      - .data/backend/media:/usr/src/backend/media
+      - .data/backend/logs:/logs
+    command: ./deploy/gunicorn.sh
     ports:
-      - 8000:8000
+      - "8000:8000"
     depends_on:
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
   redis:
-    container_name: redis
-    image: "redis"
+    container_name: shoonya-redis
+    image: redis:7.2.4
+    command: redis-server --appendonly yes
+    restart: always
     ports:
-      - 6379:6379
+      - "6379:6379"
+    volumes:
+      - .data/redis:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   
   celery:
-    container_name: celery-default
+    container_name: shoonya-celery-default
     restart: always
-    build: ./backend
+    image: shoonya-backend:dev
     command: celery -A shoonya_backend.celery worker -Q default --concurrency=2 --loglevel=info
+    env_file:
+      - config/dev/celery.env
     volumes:
       - ./backend/:/usr/src/backend/
-      - logs_vol:/logs
+      - .data/celery/logs:/logs
     depends_on:
       - redis
-      - web 
+      - db
 
   # This is the additional queue which contains the low-priority celery tasks. We can adjust the concurrency and workers alloted to this container. 
   celery2: 
-    container_name: celery-low-priority
+    container_name: shoonya-celery-low-priority
     restart: always
-    build: ./backend
+    image: shoonya-backend:dev
     command: celery -A shoonya_backend.celery worker -Q functions --concurrency=2 --loglevel=info
+    env_file:
+      - config/dev/celery.env
     volumes:
       - ./backend/:/usr/src/backend/
-      - logs_vol:/logs
+      - .data/celery2/logs:/logs
+    depends_on:
+      - redis
+      - db
+
+#  logstash:
+#    container_name: logstash
+#    image: docker.elastic.co/logstash/logstash:7.14.0
+#    hostname: shoonya_dev_logger
+#    volumes:
+#      - ./logstash_dev.conf:/usr/share/logstash/pipeline/logstash.conf
+#      - logs_vol:/logs
+#    extra_hosts:
+#      - "elasticsearch:20.42.57.194"
+#    command: logstash -f /usr/share/logstash/pipeline/logstash.conf
+
+  # Celery beats - for scheduling daily e-mails - commented out for dev hostings.
+  celery-beat:
+    image: shoonya-backend:dev
+    container_name: shoonya-celery-beat
+    restart: always
+    command: celery -A shoonya_backend.celery beat --loglevel=info
+    env_file:
+      - config/dev/celery.env
+    volumes:
+      - ./backend/:/usr/src/backend
     depends_on:
       - redis
       - web
-  logstash:
-    container_name: logstash
-    image: docker.elastic.co/logstash/logstash:7.14.0
-    hostname: shoonya_dev_logger
-    volumes:
-      - ./logstash_dev.conf:/usr/share/logstash/pipeline/logstash.conf
-      - logs_vol:/logs
-    extra_hosts:
-      - "elasticsearch:20.42.57.194"
-    command: logstash -f /usr/share/logstash/pipeline/logstash.conf  
-
-  # Celery beats - for scheduling daily e-mails - commented out for dev hostings.
-  # celery-beat:
-  #  build: ./backend
-  #  command: celery -A shoonya_backend.celery beat --loglevel=info
-  #  volumes:
-  #    - ./backend/:/usr/src/backend
-  #  depends_on:
-  #    - redis
-  #    - web
   
   celery3:
-    container_name: celery-reports
+    container_name: shoonya-celery-reports
     restart: always
-    build: ./backend
+    image: shoonya-backend:dev
+    env_file:
+      - config/dev/celery.env
     command: celery -A shoonya_backend.celery worker -Q reports --concurrency=2 --loglevel=info
     volumes:
       - ./backend/:/usr/src/backend/
-      - logs_vol:/logs
+      - .data/celery3/logs:/logs
     depends_on:
       - redis
-      - web
+      - db
+
   flower:
-    container_name: flower
+    container_name: shoonya-flower
     restart: always
-    build: ./backend
+    image: shoonya-backend:dev
+    env_file:
+      - config/dev/celery.env
     command: celery -A shoonya_backend.celery flower --conf="./usr/src/backend/shoonya_backend/flowerconfig.py" --basic-auth="${FLOWER_USERNAME}:${FLOWER_PASSWORD}"
     ports:
       - "5555:5555"
     volumes:
       - ./backend/:/usr/src/backend/
-      - logs_vol:/logs
+      - .data/flower/logs:/logs
     depends_on:
       - redis
+      - db
       - web
-
-volumes:
-  logs_vol:
-    external: true
-  nginx_conf:
-    external: true
-  letsencrypt_certs:
-    external: true
-  certbot_acme_challenge:
-  static_volume:

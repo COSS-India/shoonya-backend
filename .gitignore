@@ -61,7 +61,7 @@ $RECYCLE.BIN/
 # Logs
 **/logs/*
 
-.data
+.data2
 data
 
 pipeline/localtest

@@ -11,11 +11,3 @@ RUN pip install --upgrade pip
 COPY ./deploy/requirements.txt /usr/src/backend/requirements.txt
 RUN pip install --default-timeout=200 -r requirements.txt
 RUN python -c "import nltk; nltk.download('punkt_tab')"
-
-COPY ./entrypoint.sh /usr/src/backend/entrypoint.sh
-
-COPY . /usr/src/backend/
-
-RUN ["chmod", "+x", "/usr/src/backend/entrypoint.sh"]
-
-ENTRYPOINT ["sh", "/usr/src/backend/entrypoint.sh"]
